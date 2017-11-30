@@ -1,55 +1,54 @@
-# base
+# docker-base
 
-A blank template to be used as a starting point to build projects on Hasura. A "project" is a "gittable" directory in the file system, which captures all the information regarding clusters, services and migrations. It can also be used to keep source code for custom services that you write.
+A minimal docker template to be used as a starting point to build projects on Hasura. A "project" is a "gittable" directory in the file system, which captures all the information regarding clusters, services and migrations. It can also be used to keep source code for custom services that you write.
 
-## Files and Directories
+### Step 1: Getting the project
 
-The project (a.k.a. project directory) has a particular directory structure and it has to be maintained strictly, else `hasura` cli would not work as expected. A representative project is shown below:
-
-```
-.
-├── hasura.yaml
-├── clusters.yaml
-├── conf
-│   ├── authorized-keys.yaml
-│   ├── auth.yaml
-│   ├── ci.yaml
-│   ├── domains.yaml
-│   ├── filestore.yaml
-│   ├── gateway.yaml
-│   ├── http-directives.conf
-│   ├── notify.yaml
-│   ├── postgres.yaml
-│   ├── routes.yaml
-│   └── session-store.yaml
-├── migrations
-│   ├── 1504788327_create_table_userprofile.down.yaml
-│   ├── 1504788327_create_table_userprofile.down.sql
-│   ├── 1504788327_create_table_userprofile.up.yaml
-│   └── 1504788327_create_table_userprofile.up.sql
-└── microservices 
-    ├── adminer
-    │   └── k8s.yaml
-    └── flask
-        ├── src/
-        ├── k8s.yaml
-        └── Dockerfile
+```sh
+$ hasura quickstart hasura/docker-base
+$ cd docker-base
 ```
 
-### `hasura.yaml`
+The above command does the following:
+1. Creates a new folder in the current working directory called `docker-base`
+2. Creates a new trial hasura cluster for you and sets that cluster as the default cluster for this project
+3. Initializes `docker-base` as a git repository and adds the necessary git remotes.
 
-This file contains some metadata about the project, namely a name, description and some keywords. Also contains `platformVersion` which says which Hasura platform version is compatible with this project.
+### Step 2: Getting cluster information
 
-### `clusters.yaml`
+Every hasura project is run on a Hasura cluster. To get details about the cluster this project is running on:
 
-Info about the clusters added to this project can be found in this file. Each cluster is defined by it's name allotted by Hasura. While adding the cluster to the project you are prompted to give an alias, which is just hasura by default. The `kubeContext` mentions the name of kubernetes context used to access the cluster, which is also managed by hasura. The `config` key denotes the location of cluster's metadata on the cluster itself. This information is parsed and cluster's metadata is appended while conf is rendered. `data` key is for holding custom variables that you can define.
-
-```yaml
-- name: h34-ambitious93-stg
-  alias: hasura
-  kubeContext: h34-ambitious93-stg
-  config:
-    configmap: controller-conf
-    namespace: hasura
-  data: null  
+```sh
+$ hasura cluster status
 ```
+
+This will give you your cluster status like so
+
+```sh
+INFO Status:                                      
+Cluster Name:       h34-excise98-stg
+Cluster Alias:      hasura
+Kube Context:       h34-excise98-stg
+Platform Version:   v0.15.3
+Cluster State:      Synced
+```
+
+Keep a note of your cluster name. Alternatively, you can also go to your [hasura dashboard](https://dashboard.hasura.io) and see the clusters you have.
+
+### Step 3: Make modifications to base docker microservice
+
+```sh
+$ cd microservices/app
+```
+
+1. Add your source files/ binaries here
+2. Modify Dockerfile to include the source files/binaries
+3. Modify k8s.yaml to specify environment variables
+
+### Step 4: Deploying on a hasura cluster
+
+```sh
+$ git add .
+$ git commit -m "Initial Commit"
+$ git push hasura master
+

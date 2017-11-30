@@ -1,4 +1,4 @@
-description: Blank template for a Hasura project
-keywords: base, getting-started
-name: base
+description: Minimal docker based template for a Hasura project
+keywords: base, getting-started, docker
+name: docker-base
 platformVersion: v0.15.3
