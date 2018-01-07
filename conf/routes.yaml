@@ -91,7 +91,7 @@
 #   enableAuth           No                  true
 #   restrictToRoles      No                  null
 #   corsPolicy           No                  []
-#   enableWebsockets     No                  true
+#   enableWebsockets     No                  false
 #   locationDirectives   No                  ""
 #
 #   - upstreamService:
